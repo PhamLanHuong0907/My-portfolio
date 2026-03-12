@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { Figma, Github, ExternalLink, X, PlayCircle, Calendar } from 'lucide-react';
+import { Figma, Github, ExternalLink, X, PlayCircle, Calendar, Maximize2 } from 'lucide-react'; // Import thêm Maximize2
 
 // Giả định bạn đã import các ảnh này, mình giữ nguyên cấu trúc import của bạn
-
 import library2 from '@/assets/library2.png';
 import library3 from '@/assets/library3.png';
 import smartdriver from '@/assets/taxi-pulse-pro - Cốc Cốc 2025-10-02 15-58-44.mp4';
@@ -43,7 +42,6 @@ interface Project {
 }
 
 // --- MOCK DATA ---
-// --- MOCK DATA ---
 const projectsData: Project[] = [
   {
     id: 1,
@@ -58,8 +56,8 @@ const projectsData: Project[] = [
  
     ],
     details: {
-      fullDesc: "Spearheaded the development of a comprehensive digital platform for ECOTEL Co., Ltd., encompassing both a client-facing website and a robust, custom-built Content Management System (CMS).\n\n• Client-Facing Interface: Engineered a modern, fully responsive UI to showcase the company's digital transformation solutions (ERP, MES). Implemented seamless dark/light mode integration and multi-language support (VN/EN) to maximize accessibility.\n• Admin Dashboard: Designed an intuitive, secure CMS empowering administrators to efficiently manage and streamline CRUD operations for dynamic content, including navigation menus, services, products, and blogs.\n\nImpact: Delivered a scalable web solution that significantly enhanced the company's online presence and optimized their internal content management workflow.",
-      media: [
+        fullDesc: "Spearheaded the development of a comprehensive digital platform for ECOTEL Co., Ltd., encompassing both a client-facing website and a robust, custom-built Content Management System (CMS).\n\n• Client-Facing Interface: Engineered a modern, fully responsive UI to showcase the company's digital transformation solutions (ERP, MES). Implemented seamless dark/light mode integration and multi-language support (VN/EN) to maximize accessibility.\n• Admin Dashboard: Designed an intuitive, secure CMS empowering administrators to efficiently manage and streamline CRUD operations for dynamic content, including navigation menus, services, products, and blogs.\n  (Demo Access - Account: user1@gmail.com | Password: user1@gmail.com)\n\nImpact: Delivered a scalable web solution that significantly enhanced the company's online presence and optimized their internal content management workflow.",
+        media: [
         { type: 'image', url: website1 },
         { type: 'image', url: admin },
       ]
@@ -108,6 +106,8 @@ const projectsData: Project[] = [
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  // Thêm state để quản lý media đang được phóng to
+  const [selectedMedia, setSelectedMedia] = useState<MediaItem | null>(null);
 
   const renderLinkIcon = (type: string) => {
     switch (type) {
@@ -132,14 +132,11 @@ const Projects = () => {
       </div>
 
       {/* Grid */}
-      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projectsData.map((project) => (
           <div 
             key={project.id} 
-            // 1. CHUYỂN `group` LÊN ĐÂY & THÊM `cursor-pointer` cho cả card
             className="bg-white rounded-3xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg group cursor-pointer"
-            // 2. CHUYỂN sự kiện onClick lên toàn bộ card
             onClick={() => setSelectedProject(project)}
           >
             {/* Thumbnail */}
@@ -150,7 +147,6 @@ const Projects = () => {
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 style={sharpImageStyle}
               />
-              {/* Lớp phủ đen và nút View Details */}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                 <span className="bg-white/90 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
                   <PlayCircle size={18} /> View Details
@@ -160,17 +156,13 @@ const Projects = () => {
 
             {/* Content */}
             <div className="p-6 flex flex-col grow relative z-10 bg-white">
-              {/* Lưu ý nhỏ: Thêm relative z-10 bg-white để phần chữ đè lên và không bị lỗi hiệu ứng */}
               <h3 className="text-[22px] font-bold text-gray-800 leading-tight mb-2 group-hover:text-[#e85d38] transition-colors duration-300">
-                {/* Mình gợi ý thêm hiệu ứng hover đổi màu tiêu đề sang cam cho đồng bộ */}
                 {project.title.split('—').map((part, index) => (
                   <React.Fragment key={index}>
                     {index === 0 ? <span>{part}</span> : <span className="text-gray-600 block text-lg font-medium mt-1 group-hover:text-[#e85d38]/80 transition-colors">— {part}</span>}
                   </React.Fragment>
                 ))}
               </h3>
-              
-         
               
               {/* Duration Info */}
               <div className="flex items-center gap-2 text-gray-500 text-sm mb-4 font-medium">
@@ -182,11 +174,11 @@ const Projects = () => {
               <div className="flex flex-wrap gap-2 mb-4">
                 {project.tags.map((tag, index) => (
                   <span 
-  key={index} 
-  className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100/50"
->
-  {tag}
-</span>
+                    key={index} 
+                    className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-100/50"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
 
@@ -196,14 +188,15 @@ const Projects = () => {
               </p>
 
               {/* Links */}
-              <div className="flex items-center gap-5 mt-auto">
+              <div className="flex items-center gap-5 mt-auto" onClick={(e) => e.stopPropagation()}>
+                {/* e.stopPropagation() ngăn chặn click vào link kích hoạt onClick của thẻ cha */}
                 {project.links.map((link, index) => (
                   <a 
                     key={index}
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex items-center gap-1.5 text-[#e85d38] hover:text-[#c74c2d] transition-colors text-sm font-semibold"
+                    className="flex items-center gap-1.5 text-[#e85d38] hover:text-[#c74c2d] transition-colors text-sm font-semibold z-20 relative"
                   >
                     {renderLinkIcon(link.type)}
                     <span>{link.text}</span>
@@ -215,7 +208,7 @@ const Projects = () => {
         ))}
       </div>
 
-      {/* MODAL */}
+      {/* PROJECT DETAILS MODAL */}
       {selectedProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col relative overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
@@ -241,32 +234,28 @@ const Projects = () => {
               <div className="flex flex-wrap gap-2 mb-6">
                 {selectedProject.tags.map((tag: string, index: number) => (
                   <span 
-  key={index} 
-  className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-200/50"
->
-  {tag}
-</span>
+                    key={index} 
+                    className="px-3 py-1 bg-amber-50 text-amber-600 text-xs font-semibold rounded-full border border-amber-200/50"
+                  >
+                    {tag}
+                  </span>
                 ))}
               </div>
 
               <div className="text-gray-700 leading-normal text-[15px] mb-8 flex flex-col gap-2.5">
-  {selectedProject.details.fullDesc.split('\n').map((line: string, index: number) => {
-    // Bỏ qua các dòng trống do \n\n tạo ra
-    if (!line.trim()) return null; 
-    
-    // Kiểm tra xem dòng này có phải là gạch đầu dòng không
-    const isBullet = line.trim().startsWith('•');
-    
-    return (
-      <p 
-        key={index} 
-        className={isBullet ? "pl-4 relative text-gray-600" : "font-medium text-gray-800"}
-      >
-        {line}
-      </p>
-    );
-  })}
-</div>
+                {selectedProject.details.fullDesc.split('\n').map((line: string, index: number) => {
+                  if (!line.trim()) return null; 
+                  const isBullet = line.trim().startsWith('•');
+                  return (
+                    <p 
+                      key={index} 
+                      className={isBullet ? "pl-4 relative text-gray-600" : "font-medium text-gray-800"}
+                    >
+                      {line}
+                    </p>
+                  );
+                })}
+              </div>
 
               <h4 className="text-lg font-bold text-amber-600 mb-4">Project Gallery</h4>
               
@@ -274,8 +263,8 @@ const Projects = () => {
                 {selectedProject.details.media.map((item: MediaItem, index: number) => (
                   <div 
                     key={index} 
-                    // Thêm điều kiện md:col-span-2 nếu item.type là 'video'
-                    className={`rounded-xl overflow-hidden border border-gray-200 bg-gray-50 aspect-video flex items-center justify-center ${item.type === 'video' ? 'md:col-span-2' : ''}`}
+                    className={`relative rounded-xl overflow-hidden border border-gray-200 bg-gray-50 aspect-video flex items-center justify-center group/media cursor-pointer ${item.type === 'video' ? 'md:col-span-2' : ''}`}
+                    onClick={() => setSelectedMedia(item)} // Gọi hàm phóng to khi click
                   >
                     {item.type === 'image' ? (
                       <img 
@@ -285,12 +274,13 @@ const Projects = () => {
                         style={sharpImageStyle}
                       />
                     ) : (
-                      <video src={item.url} autoPlay 
-                        muted 
-                        loop 
-                        playsInline 
-                        controls className="w-full h-full object-cover" />
+                      <video src={item.url} autoPlay muted loop playsInline className="w-full h-full object-cover" />
                     )}
+                    
+                    {/* Overlay hướng dẫn phóng to khi hover */}
+                    <div className="absolute inset-0 bg-black/30 opacity-0 group-hover/media:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-sm">
+                       <Maximize2 size={28} className="text-white drop-shadow-md" />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -298,6 +288,45 @@ const Projects = () => {
           </div>
         </div>
       )}
+
+      {/* LIGHTBOX MODAL (Phóng to ảnh/video) */}
+      {selectedMedia && (
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/90 p-4 sm:p-8 backdrop-blur-md animate-in fade-in duration-200 cursor-zoom-out"
+          onClick={() => setSelectedMedia(null)} // Click ra ngoài hoặc vào ảnh sẽ đóng
+        >
+          {/* Nút đóng */}
+          <button 
+            onClick={() => setSelectedMedia(null)}
+            className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white transition-colors z-50"
+          >
+            <X size={28} />
+          </button>
+
+          {/* Nội dung phóng to */}
+          <div 
+            className="relative max-w-[95vw] max-h-[90vh] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()} // Ngăn click vào ảnh bị đóng modal
+          >
+            {selectedMedia.type === 'image' ? (
+              <img 
+                src={selectedMedia.url} 
+                alt="Enlarged view" 
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                style={sharpImageStyle}
+              />
+            ) : (
+              <video 
+                src={selectedMedia.url} 
+                autoPlay 
+                controls // Bật controls cho người dùng điều khiển khi xem to
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl bg-black" 
+              />
+            )}
+          </div>
+        </div>
+      )}
+
     </section>
   );
 };
