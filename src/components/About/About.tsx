@@ -1,4 +1,3 @@
-import React from 'react';
 import Navbar from './Header'; // Nhớ kiểm tra lại tên file Navbar/Header của bạn nhé
 import { Mail, Github, Facebook, Palette, Code, Users, Lightbulb } from 'lucide-react';
 
