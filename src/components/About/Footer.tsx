@@ -102,7 +102,7 @@ const Footer = () => {
               </div>
               <div className="flex flex-col pt-1">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Email</span>
-                <span className="text-[14px] leading-relaxed font-medium break-all">hustdream2k5@gmail.com</span>
+                <span className="text-[14px] leading-relaxed font-medium break-all">huongphamlan0907@gmail.com</span>
               </div>
             </a>
 
