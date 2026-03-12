@@ -51,7 +51,7 @@ const projectsData: Project[] = [
     thumbnail: website,
     duration: "12/2025 – 02/2026 | Company Project",
     tags: ["ReactJS", "TypeScript", "Tailwind CSS"],
-    shortDesc: "Developed the official website and a custom Content Management System (CMS) with dark/light themes and multi-language support.",
+    shortDesc: "Design & developed a completely new corporate website and a custom Content Management System (CMS) with dark/light themes and multi-language support.",
     links: [
       { type: 'demo', text: 'Website', url: 'https://ecotel-wheat.vercel.app/' },
       { type: 'demo', text: 'Admin', url: 'https://ecotel-admin.vercel.app/auth' },
@@ -132,23 +132,25 @@ const Projects = () => {
       </div>
 
       {/* Grid */}
+      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projectsData.map((project) => (
           <div 
             key={project.id} 
-            className="bg-white rounded-3xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg"
+            // 1. CHUYỂN `group` LÊN ĐÂY & THÊM `cursor-pointer` cho cả card
+            className="bg-white rounded-3xl overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-100 flex flex-col transition-all hover:-translate-y-1 hover:shadow-lg group cursor-pointer"
+            // 2. CHUYỂN sự kiện onClick lên toàn bộ card
+            onClick={() => setSelectedProject(project)}
           >
             {/* Thumbnail */}
-            <div 
-              className="h-48 relative overflow-hidden group cursor-pointer"
-              onClick={() => setSelectedProject(project)}
-            >
+            <div className="h-48 relative overflow-hidden">
               <img 
                 src={project.thumbnail} 
                 alt={project.title} 
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 style={sharpImageStyle}
               />
+              {/* Lớp phủ đen và nút View Details */}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center backdrop-blur-[2px]">
                 <span className="bg-white/90 text-gray-800 px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
                   <PlayCircle size={18} /> View Details
@@ -157,14 +159,18 @@ const Projects = () => {
             </div>
 
             {/* Content */}
-            <div className="p-6 flex flex-col grow">
-              <h3 className="text-[22px] font-bold text-gray-800 leading-tight mb-2">
+            <div className="p-6 flex flex-col grow relative z-10 bg-white">
+              {/* Lưu ý nhỏ: Thêm relative z-10 bg-white để phần chữ đè lên và không bị lỗi hiệu ứng */}
+              <h3 className="text-[22px] font-bold text-gray-800 leading-tight mb-2 group-hover:text-[#e85d38] transition-colors duration-300">
+                {/* Mình gợi ý thêm hiệu ứng hover đổi màu tiêu đề sang cam cho đồng bộ */}
                 {project.title.split('—').map((part, index) => (
                   <React.Fragment key={index}>
-                    {index === 0 ? <span className="text-gray-900">{part}</span> : <span className="text-gray-600 block text-lg font-medium mt-1">— {part}</span>}
+                    {index === 0 ? <span>{part}</span> : <span className="text-gray-600 block text-lg font-medium mt-1 group-hover:text-[#e85d38]/80 transition-colors">— {part}</span>}
                   </React.Fragment>
                 ))}
               </h3>
+              
+         
               
               {/* Duration Info */}
               <div className="flex items-center gap-2 text-gray-500 text-sm mb-4 font-medium">
